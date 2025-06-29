@@ -3,6 +3,7 @@
  */
 
 const API_URL = 'https://warranty-backend.onrender.com/api/query';
+const API_BASE_URL = 'https://warranty-backend.onrender.com';
 
 interface ChatSession {
   _id: string;
@@ -58,7 +59,7 @@ export const sendMessage = async (prompt: string, userId: string, username: stri
     return data.response;
   } catch (error) {
     if (error instanceof TypeError && error.message === 'Failed to fetch') {
-      throw new Error('Unable to connect to the server. Please make sure the backend server is running on port 5002');
+      throw new Error('Unable to connect to the server. Please check your internet connection and try again.');
     }
     console.error('Error sending message:', error);
     throw error;
@@ -67,7 +68,7 @@ export const sendMessage = async (prompt: string, userId: string, username: stri
 
 export const getChatHistory = async (userId: string): Promise<ChatHistoryResponse> => {
   try {
-    const response = await fetch(`http://localhost:5002/api/chat-history/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/chat-history/${userId}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -87,7 +88,7 @@ export const getChatHistory = async (userId: string): Promise<ChatHistoryRespons
 
 export const getChatSession = async (userId: string, sessionId: string): Promise<ChatSession> => {
   try {
-    const response = await fetch(`http://localhost:5002/api/chat-history/${userId}/${sessionId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/chat-history/${userId}/${sessionId}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

@@ -9,7 +9,7 @@ interface User {
   createdAt: Date;
 }
 
-const API_BASE_URL = 'http://localhost:5002';
+const API_BASE_URL = 'https://warranty-backend.onrender.com';
 
 export const authenticate = async (email: string, whatsapp: string, isTechnician: boolean = false): Promise<User | null> => {
   // Replace with actual API call to your backend
