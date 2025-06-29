@@ -1,5 +1,6 @@
 // This file should be replaced with API calls to your backend
 // Example interface for type safety
+// Updated to use deployed Render backend - cache bust
 interface User {
   _id: string;
   name: string;
@@ -7,6 +8,14 @@ interface User {
   whatsapp: string;
   role: 'user' | 'technician';
   createdAt: Date;
+}
+
+interface Purchase {
+  _id: string;
+  userId: string;
+  productName: string;
+  purchaseDate: string;
+  warrantyExpiry: string;
 }
 
 const API_BASE_URL = 'https://warranty-backend.onrender.com';
