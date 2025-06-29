@@ -17,7 +17,11 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["http://localhost:5173", "http://localhost:5174"],
+        "origins": [
+            "http://localhost:5173",
+            "http://localhost:5174",
+            "https://waaranty-assistant.netlify.app"  # <-- your Netlify site
+        ],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": True
@@ -31,7 +35,7 @@ if not os.path.exists(FAISS_PATH):
     logger.info(f"Created FAISS directory at {FAISS_PATH}")
 
 # MongoDB setup
-MONGODB_URI = "mongodb://localhost:27017"
+MONGODB_URI = os.environ.get("MONGODB_URI", "mongodb+srv://rtkvma:4uVbFCTl1dG9Y23u@ai-cluster.tsnsuuu.mongodb.net/?retryWrites=true&w=majority&appName=ai-cluster")
 client = MongoClient(MONGODB_URI)
 db = client.warranty_assistant
 users_collection = db.users
@@ -52,7 +56,7 @@ if not technicians_collection.find_one({'email': default_technician['email']}):
     logger.info("Created default technician account")
 
 # Configure Google Gemini API
-GOOGLE_API_KEY = "AIzaSyCV3iu9BRwKMFZ1Y2FFLVgMXZFHg0Egozs"
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
 configure(api_key=GOOGLE_API_KEY)
 
 def get_or_create_chat_session(user_id, username):
