@@ -44,16 +44,19 @@ chats_collection = db.chats
 purchases_collection = db.purchases
 
 # Add a default technician account if it doesn't exist
-default_technician = {
-    'email': 'tech@warranty.com',
-    'whatsapp': '1234567890',
-    'name': 'Default Technician',
-    'role': 'technician'
-}
+if client and technicians_collection:
+    default_technician = {
+        'email': 'tech@warranty.com',
+        'whatsapp': '1234567890',
+        'name': 'Default Technician',
+        'role': 'technician'
+    }
 
-if not technicians_collection.find_one({'email': default_technician['email']}):
-    technicians_collection.insert_one(default_technician)
-    logger.info("Created default technician account")
+    if not technicians_collection.find_one({'email': default_technician['email']}):
+        technicians_collection.insert_one(default_technician)
+        logger.info("Created default technician account")
+else:
+    logger.warning("MongoDB not available - skipping default technician creation")
 
 # Configure Google Gemini API
 GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
@@ -444,6 +447,9 @@ For example: "Samsung, Model, 2022, Not cooling properly" """
 @app.route('/api/users', methods=['POST'])
 def create_user():
     try:
+        if not users_collection:
+            return jsonify({'error': 'Database connection not available'}), 503
+            
         data = request.json
         name = data.get('name')
         email = data.get('email')
@@ -476,6 +482,9 @@ def create_user():
 @app.route('/api/auth', methods=['POST'])
 def authenticate():
     try:
+        if not users_collection or not technicians_collection:
+            return jsonify({'error': 'Database connection not available'}), 503
+            
         data = request.json
         email = data.get('email')
         whatsapp = data.get('whatsapp')
